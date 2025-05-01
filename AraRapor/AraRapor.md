@@ -68,7 +68,7 @@ Bu yapı sayesinde sistem; hareketleri doğru şekilde algılar, oda bazlı bild
 HC-SR501 PIR (Passive Infrared) sensörleri, ortamda bulunan nesnelerin yaydığı kızılötesi (IR) ışını algılar. Bu sensörler 3.3–5V arası bir gerilimle çalışır ve çıkış olarak dijital sinyal üretir. Algılama durumunda OUT pininden yaklaşık 3.3V seviyesinde HIGH sinyal verir; hareket olmadığında bu sinyal LOW seviyesindedir. Raspberry Pi Pico W üzerindeki GPIO pinleri bu dijital çıkışları okuyarak olayları tespit eder. Sensörler, içinde iki ayrı IR dedektörü olan bir Fresnel lens ile IR dalga farklarını karşılaştırarak çalışır. Sensörün arkasındaki potansiyometreler ile algılama süresi ve mesafesi ayarlanabilir.
 
 ## GPIO Pinleri ve Elektriksel Arayüz
-Raspberry Pi Pico W'de sensörler GPIO 18 (Koridor), GPIO 19 (Garaj) ve GPIO 20 (Mutfak) pinlerine bağlanmıştır. Bu pinler `pin = machine.Pin(X, machine.Pin.IN)`  komutu ile giriş (input) olarak yapılandırılmıştır. Bu sayede sensörden gelen HIGH/LOW sinyalleri okunabilir. Aynı şekilde GPIO 21 pinine bağlı bir Kill Switch fiziksel olarak sistemin enerjisini kesmek amacıyla kullanılır. Yerleşik LED ise GPIO 25 pininde yer alır ve sistem durumu için görsel bildirim sağlar.
+Raspberry Pi Pico W'de sensörler sırasıyla GPIO 18 (Koridor), GPIO 19 (Garaj) ve GPIO 20 (Mutfak) pinlerine bağlanmıştır. Bu pinler, `pinMode(pin, INPUT_PULLDOWN)` fonksiyonu ile giriş (input) olarak yapılandırılmıştır. Böylece sensörlerden gelen HIGH/LOW dijital sinyaller okunabilir. GPIO 21 pinine bağlı olan Kill Switch ise pinMode(21, INPUT); komutu ile yapılandırılmış olup, yazılım tarafından izlenerek sensörlerin dinlenmesini durdurmak amacıyla kullanılır. Yerleşik LED, LED_BUILTIN üzerinden pinMode(LED_BUILTIN, OUTPUT); fonksiyonu ile çıkış olarak tanımlanmıştır ve sistem durumu hakkında görsel bildirim sağlamak için kullanılmaktadır.
 
 ## Güvenli Bağlantı: WiFiClientSecure & TLS
 Telegram Bot API ile yapılan tüm veri iletimi HTTPS protokolü üzerinden gerçekleşir. Bu nedenle WiFiClientSecure kütüphanesi kullanılarak bağlantı TLS 1.2 üzerinden güvence altına alınır. Telegram sunucusunun X.509 sertifikası projeye gömülerek, sunucu kimliğinin doğrulanması sağlanır. Bu, araya girme (MITM) saldırılarına karşı koruma sağlar.
@@ -87,9 +87,7 @@ Proje sürecinin ilk aşamalarında kullanılan Raspberry Pi Pico W kartı, dona
 
 # Projenin Devamında Yapılacaklar
 
-Projenin başlangıç aşamasında yalnızca tek bir PIR sensör ile hareket algılama planlanmaktaydı. Ancak proje ilerledikçe sistemin gerçek bir ev ortamını temsil etmesi ve daha fazla bölgeden veri toplayabilmesi hedeflendi. Bu doğrultuda sistem üç PIR sensör ile yeniden tasarlandı ve her biri farklı bir fiziksel alanı (mutfak, garaj, koridor) temsil edecek şekilde yapılandırıldı.
-
-Bu kapsamda bir koruma kutusu temin edilmiş, kutu içerisi fiziksel olarak üç bölüme ayrılarak her sensör için ayrı bir oda temsili oluşturulmuştur. Bu yapı sayesinde sistem, hangi sensörün tetiklendiğini algılayabilmekte ve buna göre kullanıcıya spesifik bildirimler gönderebilmektedir. Devam eden süreçte, kutu tasarımının daha profesyonel hale getirilmesi, sensör konumlandırmalarının optimize edilmesi ve sistemin kablosuz bağlantı güvenliğinin artırılması planlanmaktadır.
+Şu an sistemimiz, tek bir PIR sensör ile temel seviyede çalıştırılmış ve Telegram bildirim altyapısı test edilmiştir. Projenin ilerleyen aşamasında ise, gerçek bir ev ortamını simüle edebilmek amacıyla çok odalı bir maket ev tasarlanması planlanmaktadır. Bu maket yapıda üç farklı oda oluşturularak, her bir odaya bir PIR sensör entegre edilecektir. Böylece sistem, hangi odada hareket algılandığını doğru şekilde tespit edebilecek ve kullanıcıya ilgili bildirimleri odalara özel olarak iletebilecektir. Bu geliştirme, güvenlik sistemimizin hem işlevselliğini hem de görselliğini artırarak proje bütünlüğünü güçlendirecektir.
 
 ```mermaid
 graph TD;
