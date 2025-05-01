@@ -91,4 +91,14 @@ Projenin başlangıç aşamasında yalnızca tek bir PIR sensör ile hareket alg
 
 Bu kapsamda bir koruma kutusu temin edilmiş, kutu içerisi fiziksel olarak üç bölüme ayrılarak her sensör için ayrı bir oda temsili oluşturulmuştur. Bu yapı sayesinde sistem, hangi sensörün tetiklendiğini algılayabilmekte ve buna göre kullanıcıya spesifik bildirimler gönderebilmektedir. Devam eden süreçte, kutu tasarımının daha profesyonel hale getirilmesi, sensör konumlandırmalarının optimize edilmesi ve sistemin kablosuz bağlantı güvenliğinin artırılması planlanmaktadır.
 
+```mermaid
+graph TD;
+    Başlangıç --> WiFi_Bağlantısı
+    WiFi_Bağlantısı --> Zaman_Senkronizasyonu
+    Zaman_Senkronizasyonu --> Sensör_Taraması
+    Sensör_Taraması -->|Hareket Algılandı| Telegram_Bildirimi
+    Telegram_Bildirimi --> Sensör_Taraması
+    Sensör_Taraması -->|Hareket Yok| Bekleme
+    Bekleme --> Sensör_Taraması
+```
 
