@@ -89,11 +89,12 @@ Proje sürecinin ilk aşamalarında kullanılan Raspberry Pi Pico W kartı, dona
 
 Şu an sistemimiz, tek bir PIR sensör ile temel seviyede çalıştırılmış ve Telegram bildirim altyapısı test edilmiştir. Projenin ilerleyen aşamasında ise, gerçek bir ev ortamını simüle edebilmek amacıyla çok odalı bir maket ev tasarlanması planlanmaktadır. Bu maket yapıda üç farklı oda oluşturularak, her bir odaya bir PIR sensör entegre edilecektir. Böylece sistem, hangi odada hareket algılandığını doğru şekilde tespit edebilecek ve kullanıcıya ilgili bildirimleri odalara özel olarak iletebilecektir. Bu geliştirme, güvenlik sistemimizin hem işlevselliğini hem de görselliğini artırarak proje bütünlüğünü güçlendirecektir.
 
+# Projenin Akış Şeması
+
 ```mermaid
 graph TD;
     Başlangıç --> WiFi_Bağlantısı
-    WiFi_Bağlantısı --> Zaman_Senkronizasyonu
-    Zaman_Senkronizasyonu --> Sensör_Taraması
+    WiFi_Bağlantısı --> Sensör_Taraması
     Sensör_Taraması -->|Hareket Algılandı| Telegram_Bildirimi
     Telegram_Bildirimi --> Sensör_Taraması
     Sensör_Taraması -->|Hareket Yok| Bekleme
