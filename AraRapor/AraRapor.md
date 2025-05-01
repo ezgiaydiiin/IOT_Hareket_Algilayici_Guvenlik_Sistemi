@@ -64,6 +64,15 @@ Bu projede Raspberry Pi Pico W kullanılarak üç adet PIR sensörle donatılmı
 
 Bu yapı sayesinde sistem; hareketleri doğru şekilde algılar, oda bazlı bildirim üretir, kullanıcıyı zamanlı olarak bilgilendirir ve manuel olarak kontrol edilebilir modda çalışır.
 
+## PIR Sensörlerin Çalışma Prensibi ve Sinyal Yapısı
+HC-SR501 PIR (Passive Infrared) sensörleri, ortamda bulunan nesnelerin yaydığı kızılötesi (IR) ışını algılar. Bu sensörler 3.3–5V arası bir gerilimle çalışır ve çıkış olarak dijital sinyal üretir. Algılama durumunda OUT pininden yaklaşık 3.3V seviyesinde HIGH sinyal verir; hareket olmadığında bu sinyal LOW seviyesindedir. Raspberry Pi Pico W üzerindeki GPIO pinleri bu dijital çıkışları okuyarak olayları tespit eder. Sensörler, içinde iki ayrı IR dedektörü olan bir Fresnel lens ile IR dalga farklarını karşılaştırarak çalışır. Sensörün arkasındaki potansiyometreler ile algılama süresi ve mesafesi ayarlanabilir.
+
+## GPIO Pinleri ve Elektriksel Arayüz
+Raspberry Pi Pico W'de sensörler GPIO 18 (Koridor), GPIO 19 (Garaj) ve GPIO 20 (Mutfak) pinlerine bağlanmıştır. Bu pinler pin = machine.Pin(X, machine.Pin.IN) komutu ile giriş (input) olarak yapılandırılmıştır. Bu sayede sensörden gelen HIGH/LOW sinyalleri okunabilir. Aynı şekilde GPIO 21 pinine bağlı bir Kill Switch fiziksel olarak sistemin enerjisini kesmek amacıyla kullanılır. Yerleşik LED ise GPIO 25 pininde yer alır ve sistem durumu için görsel bildirim sağlar.
+
+## Güvenli Bağlantı: WiFiClientSecure & TLS
+Telegram Bot API ile yapılan tüm veri iletimi HTTPS protokolü üzerinden gerçekleşir. Bu nedenle WiFiClientSecure kütüphanesi kullanılarak bağlantı TLS 1.2 üzerinden güvence altına alınır. Telegram sunucusunun X.509 sertifikası projeye gömülerek, sunucu kimliğinin doğrulanması sağlanır. Bu, araya girme (MITM) saldırılarına karşı koruma sağlar.
+
 
 # Elde Edilen Teknik Sonuçlar
 
@@ -71,4 +80,15 @@ Bu yapı sayesinde sistem; hareketleri doğru şekilde algılar, oda bazlı bild
 Sensörlerden herhangi biri tarafından algılanan hareket, önceden yapılandırılmış struct dizisi aracılığıyla algılandığı odanın ismi ile ilişkilendirildi.
 Telegram API aracılığıyla, olayın gerçekleştiği odaya özgü zaman damgalı mesaj, TLS sertifikalı HTTPS üzerinden başarılı şekilde iletildi.
 Sistem yapısı, modüler sensör tanımı ile genişletilebilirlik prensibine uygun olarak tasarlandığından dolayı çok odalı (multi-zone) güvenlik izleme işlevselliği başarıyla sağlandı.
+
+# Karşılaşılan Sorunlar ve Çözümler
+
+Proje sürecinin ilk aşamalarında kullanılan Raspberry Pi Pico W kartı, donanımsal bir sorun nedeniyle çalışmaz hale gelmiştir. Yapılan testler ve bağlantı kontrolleri sonucunda kartın enerji verildiğinde yanıt vermediği ve USB arabirimi üzerinden tanınmadığı gözlemlenmiştir. Bu durumun, kısa devre veya hatalı besleme sonucu kartın zarar görmesinden kaynaklandığı değerlendirilmiştir. Sorunun çözümü olarak yeni bir Raspberry Pi Pico W temin edilmiş ve sistem baştan kurulmuştur. Bu süreç, donanım testlerinin ve bağlantıların daha dikkatli yapılması gerektiğini ortaya koymuş, ilerleyen çalışmalarda daha dikkatli bir entegrasyon süreci izlenmesine neden olmuştur.
+
+# Projenin Devamında Yapılacaklar
+
+Projenin başlangıç aşamasında yalnızca tek bir PIR sensör ile hareket algılama planlanmaktaydı. Ancak proje ilerledikçe sistemin gerçek bir ev ortamını temsil etmesi ve daha fazla bölgeden veri toplayabilmesi hedeflendi. Bu doğrultuda sistem üç PIR sensör ile yeniden tasarlandı ve her biri farklı bir fiziksel alanı (mutfak, garaj, koridor) temsil edecek şekilde yapılandırıldı.
+
+Bu kapsamda bir koruma kutusu temin edilmiş, kutu içerisi fiziksel olarak üç bölüme ayrılarak her sensör için ayrı bir oda temsili oluşturulmuştur. Bu yapı sayesinde sistem, hangi sensörün tetiklendiğini algılayabilmekte ve buna göre kullanıcıya spesifik bildirimler gönderebilmektedir. Devam eden süreçte, kutu tasarımının daha profesyonel hale getirilmesi, sensör konumlandırmalarının optimize edilmesi ve sistemin kablosuz bağlantı güvenliğinin artırılması planlanmaktadır.
+
 
